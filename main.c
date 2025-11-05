@@ -9,64 +9,111 @@ typedef struct produto {
     int quantidade;
 } Produto;
 
+int adiciona_produto (Produto *produtos, int *qtd_produtos) {
+
+    //aumenta o tamanho do vetor produtos
+    produtos = realloc(produtos, *qtd_produtos * sizeof(Produto) + sizeof(Produto));
+    if(produtos == NULL) {
+        printf("Memoria insuficiente!\n");
+        return -1;
+    }
+
+    //salva as informacoes do novo produto
+    printf("\nDigite o nome, preco e quantidade do produto:\n");
+    scanf("%s %f %d", produtos[*qtd_produtos].nome, &produtos[*qtd_produtos].preco, &produtos[*qtd_produtos].quantidade);
+    printf("Produto adicionado!\n");
+
+    //adiciona o codigo do novo produto
+    produtos[*qtd_produtos].codigo = (*qtd_produtos) + 101;
+
+    //salva a nova quantidade de produtos
+    (*qtd_produtos)++;
+
+    return 0;
+}
+
+int busca_produto (Produto *produtos, int qtd_produtos) {
+    
+    //recebe o codigo do produto desejado
+    printf("\nDigite o codigo:\n");
+    int codigo_digitado;
+    scanf("%d", &codigo_digitado);
+    
+    //realiza a busca atraves do codigo e imprime o produto
+    for(int i = 0; i < qtd_produtos; i++) {
+        if(produtos[i].codigo == codigo_digitado) {
+            printf("%s %.2f %d\n", produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+            return 0;
+        }
+    }
+
+    //avisa se o codigo digitado nao foi encontrado
+    printf("Codigo nao encontrado!\n");
+    return 0;
+}
+
+void imprime_produtos (Produto *produtos, int qtd_produtos) {
+    printf("\n");
+    for(int i = 0; i < qtd_produtos; i++) {
+        printf("%d %s %.2f %d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+    }
+}
+
+void ordena_produtos (Produto *produtos, int qtd_produtos) {
+    
+    //ordena os produtos por preco com bubble sort
+    Produto temp;
+    for (int i = 0; i < qtd_produtos-1; i++) {
+        for(int j = 0; j < qtd_produtos - i - 1; j++) {
+            if(produtos[j].preco > produtos[j+1].preco) {
+                temp = produtos[j];
+                produtos[j] = produtos[j+1];
+                produtos[j+1] = temp;
+            }
+        }
+    }
+}
+
 int main() {
 
-    // abrindo o arquivo produtos.txt
+    //abrindo o arquivo produtos.txt
     FILE *arquivo = fopen("produtos.txt", "r");
     if(arquivo == NULL) {
         puts("Erro ao abrir arquivo\n");
         return 1;
     }
 
-    //salvando os produtos do arquivo no vetor produtos
+    //alocando memoria para o vetor que ira guardar as informacoes dos produtos
     Produto *produtos = malloc(20 * sizeof(Produto));
+    if(produtos == NULL) {
+        printf("Erro de alocacao!\n");
+        return 1;
+    }
+    //lendo e salvando as informacoes dos produtos no vetor produtos
     int qtd_produtos = 0;
     while(fscanf(arquivo, "%d %s %f %d", &produtos[qtd_produtos].codigo, produtos[qtd_produtos].nome, &produtos[qtd_produtos].preco, &produtos[qtd_produtos].quantidade) != EOF){
         qtd_produtos++;
     }
     fclose(arquivo);
 
-    int operacao;
+    //menu de opcoes
+    int opcao;
     while(1) {
         printf("\nDigite a operacao desejada:\n1. Adicionar produto\n2. Buscar produto por codigo\n3. Imprimir produtos\n4. Ordenar por preco e imprimir\n5. Sair\n");
-        scanf("%d", &operacao);
-        switch(operacao) {
+        scanf("%d", &opcao);
+        switch(opcao) {
             case 1:
-                produtos = realloc(produtos, qtd_produtos * sizeof(Produto) + sizeof(Produto));
-                printf("Digite o nome, preco e quantidade do produto:\n");
-                scanf("%s %f %d", produtos[qtd_produtos].nome, &produtos[qtd_produtos].preco, &produtos[qtd_produtos].quantidade);
-                produtos[qtd_produtos].codigo = produtos[qtd_produtos-1].codigo + 1;
-                qtd_produtos++;
+                if(adiciona_produto(produtos, &qtd_produtos) == -1) return 1;
                 break;
             case 2:
-                printf("Digite o codigo:\n");
-                int codigo_digitado;
-                scanf("%d", &codigo_digitado);
-                for(int i = 0; i < qtd_produtos; i++) {
-                    if(produtos[i].codigo == codigo_digitado) {
-                        printf("%s %.2f %d\n", produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
-                        break;
-                    }
-                }
+                busca_produto(produtos, qtd_produtos);
                 break;
             case 3:
-                for(int i = 0; i < qtd_produtos; i++) {
-                    printf("%d %s %.2f %d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
-                }
+                imprime_produtos(produtos, qtd_produtos);
                 break;
             case 4:
-                for (int i = 0; i < qtd_produtos-1; i++) {
-                    for(int j = 0; j < qtd_produtos - i - 1; j++) {
-                        if(produtos[j].preco > produtos[j+1].preco) {
-                            Produto temp = produtos[j];
-                            produtos[j] = produtos[j+1];
-                            produtos[j+1] = temp;
-                        }
-                    }
-                }
-                for(int i = 0; i < qtd_produtos; i++) {
-                    printf("%d %s %.2f %d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
-                }
+                ordena_produtos(produtos, qtd_produtos);
+                imprime_produtos(produtos, qtd_produtos);
                 break;
             case 5:
                 free(produtos);
