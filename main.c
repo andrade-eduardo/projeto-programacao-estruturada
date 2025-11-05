@@ -19,7 +19,7 @@ int adiciona_produto (Produto *produtos, int *qtd_produtos) {
     }
 
     //salva as informacoes do novo produto
-    printf("\nDigite o nome, preco e quantidade do produto:\n");
+    printf("\nDigite nome, preco e quantidade (separados por espaco) do novo produto:\n");
     scanf("%s %f %d", produtos[*qtd_produtos].nome, &produtos[*qtd_produtos].preco, &produtos[*qtd_produtos].quantidade);
     printf("Produto adicionado!\n");
 
@@ -111,7 +111,7 @@ int main() {
         scanf("%d", &opcao);
         switch(opcao) {
             case 1:
-                if(adiciona_produto(produtos, &qtd_produtos) == -1) return 1;
+                adiciona_produto(produtos, &qtd_produtos);
                 break;
             case 2:
                 busca_produto(produtos, qtd_produtos);
