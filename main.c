@@ -4,7 +4,7 @@
 
 typedef struct produto {
     int codigo;
-    char nome[30];
+    char nome[20];
     float preco;
     int quantidade;
 } Produto;
@@ -39,11 +39,19 @@ int busca_produto (Produto *produtos, int qtd_produtos) {
     int codigo_digitado;
     scanf("%d", &codigo_digitado);
     
-    //realiza a busca atraves do codigo e imprime o produto
-    for(int i = 0; i < qtd_produtos; i++) {
-        if(produtos[i].codigo == codigo_digitado) {
-            printf("%s %.2f %d\n", produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+    //realiza uma busca binaria pelo codigo do produto
+    int ini = 0;
+    int fim = qtd_produtos - 1;
+    int meio;
+    while (ini <= fim) {
+        meio = (ini + fim) / 2;
+        if(produtos[meio].codigo == codigo_digitado) {
+            printf("%s %.2f %d\n", produtos[meio].nome, produtos[meio].preco, produtos[meio].quantidade);
             return 0;
+        } else if (produtos[meio].codigo < codigo_digitado) {
+            ini = meio + 1;
+        } else {
+            fim = meio - 1;
         }
     }
 
@@ -91,7 +99,7 @@ int main() {
     }
     //lendo e salvando as informacoes dos produtos no vetor produtos
     int qtd_produtos = 0;
-    while(fscanf(arquivo, "%d %s %f %d", &produtos[qtd_produtos].codigo, produtos[qtd_produtos].nome, &produtos[qtd_produtos].preco, &produtos[qtd_produtos].quantidade) != EOF){
+    while(fscanf(arquivo, "%d %19s %f %d", &produtos[qtd_produtos].codigo, produtos[qtd_produtos].nome, &produtos[qtd_produtos].preco, &produtos[qtd_produtos].quantidade) != EOF){
         qtd_produtos++;
     }
     fclose(arquivo);
