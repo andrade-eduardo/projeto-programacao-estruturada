@@ -9,13 +9,13 @@ typedef struct produto {
     int quantidade;
 } Produto;
 
-int adiciona_produto (Produto *produtos, int *qtd_produtos) {
+void adiciona_produto (Produto *produtos, int *qtd_produtos) {
 
     //aumenta o tamanho do vetor produtos
     produtos = realloc(produtos, *qtd_produtos * sizeof(Produto) + sizeof(Produto));
     if(produtos == NULL) {
         printf("Memoria insuficiente!\n");
-        return -1;
+        exit(1);
     }
 
     //salva as informacoes do novo produto
@@ -28,8 +28,6 @@ int adiciona_produto (Produto *produtos, int *qtd_produtos) {
 
     //salva a nova quantidade de produtos
     (*qtd_produtos)++;
-
-    return 0;
 }
 
 int busca_produto (Produto *produtos, int qtd_produtos) {
@@ -63,23 +61,29 @@ int busca_produto (Produto *produtos, int qtd_produtos) {
 void imprime_produtos (Produto *produtos, int qtd_produtos) {
     printf("\n");
     for(int i = 0; i < qtd_produtos; i++) {
-        printf("%d %s %.2f %d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+        printf("%d %-19s %.2f %d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
     }
 }
 
 void ordena_produtos (Produto *produtos, int qtd_produtos) {
     
+    //cria uma copia do vetor de produtos para a ordenacao
+    Produto produtos_ordenados[qtd_produtos];
+    memcpy(produtos_ordenados, produtos, qtd_produtos * sizeof(Produto));
+
     //ordena os produtos por preco com bubble sort
     Produto temp;
     for (int i = 0; i < qtd_produtos-1; i++) {
         for(int j = 0; j < qtd_produtos - i - 1; j++) {
-            if(produtos[j].preco > produtos[j+1].preco) {
-                temp = produtos[j];
-                produtos[j] = produtos[j+1];
-                produtos[j+1] = temp;
+            if(produtos_ordenados[j].preco > produtos_ordenados[j+1].preco) {
+                temp = produtos_ordenados[j];
+                produtos_ordenados[j] = produtos_ordenados[j+1];
+                produtos_ordenados[j+1] = temp;
             }
         }
     }
+
+    imprime_produtos(produtos_ordenados, qtd_produtos);
 }
 
 int main() {
@@ -121,7 +125,6 @@ int main() {
                 break;
             case 4:
                 ordena_produtos(produtos, qtd_produtos);
-                imprime_produtos(produtos, qtd_produtos);
                 break;
             case 5:
                 free(produtos);
