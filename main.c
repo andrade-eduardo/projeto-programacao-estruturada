@@ -44,8 +44,9 @@ int busca_produto (Produto *produtos, int qtd_produtos) {
     while (ini <= fim) {
         meio = (ini + fim) / 2;
         if(produtos[meio].codigo == codigo_digitado) {
-            printf("\nCodigo\t Produto\t     Preco\tQuantidade\n--------------------------------------------------\n");
-            printf("%d\t %-19s %.2f\t%d\n", produtos[meio].codigo, produtos[meio].nome, produtos[meio].preco, produtos[meio].quantidade);
+            printf("\nCodigo     Produto             Preco      Quantidade\n");
+            printf("----------------------------------------------------\n");
+            printf("%-10d %-19s %-10.2f %-10d\n", produtos[meio].codigo, produtos[meio].nome, produtos[meio].preco, produtos[meio].quantidade);
             return 0;
         } else if (produtos[meio].codigo < codigo_digitado) {
             ini = meio + 1;
@@ -60,9 +61,10 @@ int busca_produto (Produto *produtos, int qtd_produtos) {
 }
 
 void imprime_produtos (Produto *produtos, int qtd_produtos) {
-    printf("\nCodigo\t Produto\t     Preco\tQuantidade\n--------------------------------------------------\n");
+    printf("\nCodigo     Produto             Preco      Quantidade\n");
+    printf("----------------------------------------------------\n");
     for(int i = 0; i < qtd_produtos; i++) {
-        printf("%d\t %-19s %.2f\t%d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
+        printf("%-10d %-19s %-10.2f %-10d\n", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].quantidade);
     }
 }
 
