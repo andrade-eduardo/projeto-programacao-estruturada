@@ -16,7 +16,7 @@ Para executar o programa:
 ```
 
 ## Uso
-Ao rodar o programa, o usuário pode escolher as seguintes opções:
+Ao ser executado o programa exibe o menu de opções abaixo. Para realizar uma operação, digite o número da opção desejada.
 
 ```bash
 1. Adicionar produto
